@@ -1,0 +1,52 @@
+{
+  "backend": {
+    "serviceId": "srv-d40k70vgi27c73fkv1ig",
+    "serviceName": "macumba26",
+    "url": "https://macumba26.onrender.com",
+    "environmentVariables": {
+      "NODE_ENV": "production",
+      "PORT": "10000",
+      "DATABASE_URL": "postgresql://neondb_owner:npg_pxLcEBae0WI3@ep-morning-fog-adjltjzj-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require",
+      "JWT_SECRET": "shopping-macumba-super-secret-jwt-2024-CHANGE-THIS-IN-PRODUCTION",
+      "JWT_EXPIRES_IN": "7d",
+      "FRONTEND_URL": "https://shopping-macumba-frontend.onrender.com",
+      "GOOGLE_CLIENT_ID": "",
+      "GOOGLE_CLIENT_SECRET": "",
+      "CLOUDINARY_CLOUD_NAME": "",
+      "CLOUDINARY_API_KEY": "",
+      "CLOUDINARY_API_SECRET": "",
+      "MERCADO_PAGO_ACCESS_TOKEN": "",
+      "STRIPE_SECRET_KEY": "",
+      "PAYPAL_CLIENT_ID": "",
+      "PAYPAL_CLIENT_SECRET": "",
+      "SMTP_HOST": "smtp.gmail.com",
+      "SMTP_PORT": "587",
+      "SMTP_USER": "",
+      "SMTP_PASSWORD": ""
+    },
+    "buildSettings": {
+      "rootDirectory": "backend",
+      "buildCommand": "npm install && npx prisma generate && npm run build",
+      "startCommand": "npm run start:prod"
+    }
+  },
+  "frontend": {
+    "serviceName": "shopping-macumba-frontend",
+    "url": "https://shopping-macumba-frontend.onrender.com",
+    "environmentVariables": {
+      "NODE_ENV": "production",
+      "PORT": "10000",
+      "NEXT_PUBLIC_API_URL": "https://macumba26.onrender.com",
+      "NEXTAUTH_URL": "https://shopping-macumba-frontend.onrender.com",
+      "NEXTAUTH_SECRET": "nextauth-super-secret-CHANGE-THIS-IN-PRODUCTION",
+      "GOOGLE_CLIENT_ID": "",
+      "GOOGLE_CLIENT_SECRET": ""
+    },
+    "buildSettings": {
+      "rootDirectory": "frontend",
+      "buildCommand": "npm install && npm run build",
+      "startCommand": "npm start"
+    }
+  }
+}
+
