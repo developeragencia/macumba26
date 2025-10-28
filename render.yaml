@@ -1,0 +1,48 @@
+services:
+  # Backend NestJS API
+  - type: web
+    name: shopping-macumba-backend
+    runtime: node
+    region: ohio
+    plan: free
+    buildCommand: cd backend && npm install && npx prisma generate && npm run build
+    startCommand: cd backend && npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DATABASE_URL
+        fromDatabase:
+          name: shopping-macumba-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: FRONTEND_URL
+        value: https://shopping-macumba-frontend.vercel.app
+    healthCheckPath: /api/health
+    
+  # Frontend Next.js (Opcional - pode usar Vercel)
+  # - type: web
+  #   name: shopping-macumba-frontend
+  #   runtime: node
+  #   region: ohio
+  #   plan: free
+  #   buildCommand: cd frontend && npm install && npm run build
+  #   startCommand: cd frontend && npm start
+  #   envVars:
+  #     - key: NODE_ENV
+  #       value: production
+  #     - key: NEXT_PUBLIC_API_URL
+  #       value: https://shopping-macumba-backend.onrender.com
+
+databases:
+  - name: shopping-macumba-db
+    databaseName: shopping_macumba
+    user: shopping_macumba_user
+    region: ohio
+    plan: free
+    # Nota: Render criará um PostgreSQL automático
+    # Você pode usar o Neon que já configuramos ao invés disso
