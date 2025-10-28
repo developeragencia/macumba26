@@ -24,19 +24,26 @@ services:
         value: https://shopping-macumba-frontend.vercel.app
     healthCheckPath: /api/health
     
-  # Frontend Next.js (Opcional - pode usar Vercel)
-  # - type: web
-  #   name: shopping-macumba-frontend
-  #   runtime: node
-  #   region: ohio
-  #   plan: free
-  #   buildCommand: cd frontend && npm install && npm run build
-  #   startCommand: cd frontend && npm start
-  #   envVars:
-  #     - key: NODE_ENV
-  #       value: production
-  #     - key: NEXT_PUBLIC_API_URL
-  #       value: https://shopping-macumba-backend.onrender.com
+  # Frontend Next.js
+  - type: web
+    name: shopping-macumba-frontend
+    runtime: node
+    region: ohio
+    plan: starter
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: NEXT_PUBLIC_API_URL
+        value: https://macumba26.onrender.com
+      - key: NEXTAUTH_URL
+        value: https://shopping-macumba-frontend.onrender.com
+      - key: NEXTAUTH_SECRET
+        generateValue: true
 
 databases:
   - name: shopping-macumba-db
