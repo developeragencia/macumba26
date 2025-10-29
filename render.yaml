@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: shopping-macumba
+    runtime: docker
+    region: oregon
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+
