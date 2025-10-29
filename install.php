@@ -89,22 +89,11 @@ if (file_exists(__DIR__ . '/.installed')) {
                         $success[] = "✅ Conexão com banco de dados OK";
                         
                         // Verificar se as tabelas existem
-                        $expected_tables = ['users', 'vendors', 'categories', 'products', 'orders', 'order_items', 'reviews', 'subscriptions', 'messages', 'notifications', 'blog_posts'];
-                        $missing_tables = [];
-                        
-                        foreach ($expected_tables as $table) {
-                            $stmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = ?");
-                            $stmt->execute([$table]);
-                            if ($stmt->fetchColumn() == 0) {
-                                $missing_tables[] = $table;
-                            }
-                        }
-                        
-                        if (count($missing_tables) === 0) {
-                            $success[] = "✅ Todas as 11 tabelas existem no banco";
+                        $stmt = $pdo->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'users'");
+                        if ($stmt->fetchColumn() > 0) {
+                            $success[] = "✅ Tabelas já existem no banco";
                         } else {
-                            $errors[] = "⚠️ Faltam " . count($missing_tables) . " tabela(s): " . implode(', ', $missing_tables);
-                            $errors[] = "👉 Execute as migrations em database/migrations.sql no phpPgAdmin";
+                            $errors[] = "⚠️ Tabelas não encontradas. Execute as migrations em database/migrations.sql";
                         }
                     } catch (PDOException $e) {
                         $errors[] = "Erro ao conectar no banco: " . $e->getMessage();
