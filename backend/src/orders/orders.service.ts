@@ -82,14 +82,14 @@ export class OrdersService {
     );
 
     // Send confirmation email
-    if (orders.length > 0) {
-      // Email will be sent after user data is loaded
-      // await this.emailService.sendOrderConfirmation(orders[0].user.email, {
-      //   orderNumber: orders[0].orderNumber,
-      //   customerName: orders[0].user.name,
-        total: orders.reduce((sum, order) => sum + order.total, 0),
-      });
-    }
+    // Send confirmation email (commented out - needs user relation)
+    // if (orders.length > 0) {
+    //   await this.emailService.sendOrderConfirmation(orders[0].user.email, {
+    //     orderNumber: orders[0].orderNumber,
+    //     customerName: orders[0].user.name,
+    //     total: orders.reduce((sum, order) => sum + order.total, 0),
+    //   });
+    // }
 
     return orders;
   }
