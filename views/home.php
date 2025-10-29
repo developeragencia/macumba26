@@ -1,65 +1,146 @@
 <?php ob_start(); ?>
 
-<div class="bg-macumba text-white rounded-lg p-12 mb-8 text-center">
-    <h1 class="text-5xl font-bold mb-4">🕯️ Shopping da Macumba</h1>
-    <p class="text-xl">Marketplace de produtos espirituais, religiosos e esotéricos</p>
-    <p class="text-lg mt-2">Conectando você ao mundo místico</p>
-</div>
-
-<section class="mb-8">
-    <h2 class="text-3xl font-bold mb-6 text-macumba">📦 Produtos em Destaque</h2>
+<div class="container mx-auto px-4">
+    <!-- Banner principal estilo ML -->
+    <div class="bg-white rounded mb-4 overflow-hidden shadow">
+        <div class="bg-gradient-to-r from-red-900 to-red-700 text-white p-12 text-center">
+            <h1 class="text-4xl font-light mb-2">🕯️ Shopping da Macumba</h1>
+            <p class="text-xl">Os melhores produtos espirituais e esotéricos</p>
+            <p class="mt-2 text-sm">Frete grátis a partir de R$ 79</p>
+        </div>
+    </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <?php if (empty($products)): ?>
-            <div class="col-span-full text-center py-12">
-                <p class="text-gray-500 text-lg">Nenhum produto cadastrado ainda</p>
-                <p class="text-gray-400 mt-2">Em breve teremos produtos incríveis!</p>
+    <!-- Benefícios estilo ML -->
+    <div class="bg-white rounded p-4 mb-4 shadow">
+        <div class="grid grid-cols-4 gap-4 text-center">
+            <div class="flex flex-col items-center">
+                <i class="fas fa-credit-card text-3xl text-blue-500 mb-2"></i>
+                <h3 class="font-semibold text-sm">Pague com Pix</h3>
+                <p class="text-xs text-gray-600">Desconto de 10%</p>
             </div>
-        <?php else: ?>
-            <?php foreach ($products as $product): ?>
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition">
-                    <div class="h-48 bg-gray-200 flex items-center justify-center">
-                        <span class="text-6xl">🕯️</span>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2"><?= htmlspecialchars($product['name']) ?></h3>
-                        <p class="text-gray-600 text-sm mb-3 line-clamp-2">
-                            <?= htmlspecialchars(substr($product['description'] ?? '', 0, 100)) ?>...
-                        </p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold text-macumba">
-                                R$ <?= number_format($product['price'], 2, ',', '.') ?>
-                            </span>
-                            <a href="/produto/<?= $product['id'] ?>" 
-                               class="bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900">
-                                Ver Mais
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+            <div class="flex flex-col items-center">
+                <i class="fas fa-truck text-3xl text-green-500 mb-2"></i>
+                <h3 class="font-semibold text-sm">Frete grátis</h3>
+                <p class="text-xs text-gray-600">A partir de R$ 79</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <i class="fas fa-shield-alt text-3xl text-yellow-500 mb-2"></i>
+                <h3 class="font-semibold text-sm">Compra protegida</h3>
+                <p class="text-xs text-gray-600">100% segura</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <i class="fas fa-undo text-3xl text-purple-500 mb-2"></i>
+                <h3 class="font-semibold text-sm">Devolução grátis</h3>
+                <p class="text-xs text-gray-600">Em 30 dias</p>
+            </div>
+        </div>
     </div>
-</section>
 
-<section class="grid md:grid-cols-3 gap-6 mt-12">
-    <div class="bg-white p-6 rounded-lg shadow text-center">
-        <div class="text-4xl mb-3">✨</div>
-        <h3 class="font-bold text-xl mb-2">Produtos Autênticos</h3>
-        <p class="text-gray-600">Itens espirituais selecionados com cuidado</p>
+    <!-- Ofertas do dia -->
+    <div class="mb-4">
+        <div class="bg-white rounded p-4 shadow">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-light text-gray-800">Ofertas do dia</h2>
+                <a href="/produtos" class="text-blue-600 hover:underline text-sm">Ver todas</a>
+            </div>
+            
+            <!-- Grid de produtos estilo ML -->
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                <?php if (empty($products)): ?>
+                    <div class="col-span-full text-center py-12 text-gray-500">
+                        <p class="text-lg">Nenhum produto disponível</p>
+                        <p class="text-sm mt-2">Em breve teremos novidades!</p>
+                    </div>
+                <?php else: ?>
+                    <?php foreach (array_slice($products, 0, 12) as $product): ?>
+                        <a href="/produto/<?= $product['id'] ?>" class="product-card bg-white rounded hover:shadow-lg block">
+                            <div class="p-3">
+                                <!-- Imagem -->
+                                <div class="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center">
+                                    <span class="text-5xl">🕯️</span>
+                                </div>
+                                
+                                <!-- Preço -->
+                                <div class="mb-1">
+                                    <span class="price-integer">R$ <?= number_format($product['price'], 0, ',', '.') ?></span>
+                                    <span class="price-decimal"><?= str_pad(($product['price'] - floor($product['price'])) * 100, 2, '0') ?></span>
+                                </div>
+                                
+                                <!-- Desconto fictício -->
+                                <div class="text-xs text-green-600 mb-1">
+                                    <span class="free-shipping">FRETE GRÁTIS</span>
+                                </div>
+                                
+                                <!-- Nome do produto -->
+                                <h3 class="text-sm text-gray-800 line-clamp-2 leading-tight">
+                                    <?= htmlspecialchars($product['name']) ?>
+                                </h3>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
-    <div class="bg-white p-6 rounded-lg shadow text-center">
-        <div class="text-4xl mb-3">🚚</div>
-        <h3 class="font-bold text-xl mb-2">Entrega Segura</h3>
-        <p class="text-gray-600">Envio para todo Brasil</p>
+
+    <!-- Categorias -->
+    <div class="mb-4">
+        <div class="bg-white rounded p-4 shadow">
+            <h2 class="text-2xl font-light text-gray-800 mb-4">Categorias em destaque</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <a href="#" class="text-center p-4 hover:bg-gray-50 rounded">
+                    <div class="text-4xl mb-2">🕯️</div>
+                    <p class="text-sm font-semibold">Velas</p>
+                </a>
+                <a href="#" class="text-center p-4 hover:bg-gray-50 rounded">
+                    <div class="text-4xl mb-2">💨</div>
+                    <p class="text-sm font-semibold">Incensos</p>
+                </a>
+                <a href="#" class="text-center p-4 hover:bg-gray-50 rounded">
+                    <div class="text-4xl mb-2">💎</div>
+                    <p class="text-sm font-semibold">Cristais</p>
+                </a>
+                <a href="#" class="text-center p-4 hover:bg-gray-50 rounded">
+                    <div class="text-4xl mb-2">📿</div>
+                    <p class="text-sm font-semibold">Guias</p>
+                </a>
+                <a href="#" class="text-center p-4 hover:bg-gray-50 rounded">
+                    <div class="text-4xl mb-2">🔮</div>
+                    <p class="text-sm font-semibold">Oráculos</p>
+                </a>
+                <a href="#" class="text-center p-4 hover:bg-gray-50 rounded">
+                    <div class="text-4xl mb-2">📚</div>
+                    <p class="text-sm font-semibold">Livros</p>
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="bg-white p-6 rounded-lg shadow text-center">
-        <div class="text-4xl mb-3">🔮</div>
-        <h3 class="font-bold text-xl mb-2">Vendedores Verificados</h3>
-        <p class="text-gray-600">Profissionais certificados</p>
+
+    <!-- Mais vendidos -->
+    <div class="mb-4">
+        <div class="bg-white rounded p-4 shadow">
+            <h2 class="text-2xl font-light text-gray-800 mb-4">Mais vendidos</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                <?php foreach (array_slice($products, 0, 6) as $product): ?>
+                    <a href="/produto/<?= $product['id'] ?>" class="product-card bg-white rounded hover:shadow-lg block">
+                        <div class="p-3">
+                            <div class="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center">
+                                <span class="text-5xl">🕯️</span>
+                            </div>
+                            <div class="mb-1">
+                                <span class="price-integer">R$ <?= number_format($product['price'], 0, ',', '.') ?></span>
+                                <span class="price-decimal"><?= str_pad(($product['price'] - floor($product['price'])) * 100, 2, '0') ?></span>
+                            </div>
+                            <h3 class="text-sm text-gray-800 line-clamp-2 leading-tight">
+                                <?= htmlspecialchars($product['name']) ?>
+                            </h3>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
     </div>
-</section>
+</div>
 
 <?php $content = ob_get_clean(); ?>
 <?php include __DIR__ . '/layout.php'; ?>
-
