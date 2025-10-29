@@ -104,12 +104,7 @@ if (file_exists(__DIR__ . '/.installed')) {
                         if ($db_driver === 'mysql') {
                             $dsn = "mysql:host={$db_host};port={$db_port};dbname={$db_name};charset=utf8mb4";
                         } else {
-                            // PostgreSQL: só adicionar porta se for válida
-                            if (is_numeric($db_port) && $db_port > 0) {
-                                $dsn = "pgsql:host={$db_host};port={$db_port};dbname={$db_name}";
-                            } else {
-                                $dsn = "pgsql:host={$db_host};dbname={$db_name}";
-                            }
+                            $dsn = "pgsql:host={$db_host};port={$db_port};dbname={$db_name}";
                         }
                         
                         $pdo = new PDO($dsn, $db_user, $db_pass);
