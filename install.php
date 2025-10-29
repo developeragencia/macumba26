@@ -63,8 +63,9 @@ if (file_exists(__DIR__ . '/.installed')) {
                 }
                 
                 // 3. Criar arquivo .env
+                $db_driver = $_POST['db_driver'] ?? 'mysql';
                 $db_host = $_POST['db_host'] ?? 'localhost';
-                $db_port = $_POST['db_port'] ?? '5432';
+                $db_port = $_POST['db_port'] ?? ($db_driver === 'mysql' ? '3306' : '5432');
                 $db_name = $_POST['db_name'] ?? '';
                 $db_user = $_POST['db_user'] ?? '';
                 $db_pass = $_POST['db_pass'] ?? '';
@@ -74,6 +75,7 @@ if (file_exists(__DIR__ . '/.installed')) {
                     $errors[] = "Todos os campos são obrigatórios!";
                 } else {
                     $env_content = "# Database Configuration\n";
+                    $env_content .= "DB_DRIVER={$db_driver}\n";
                     $env_content .= "DB_HOST={$db_host}\n";
                     $env_content .= "DB_PORT={$db_port}\n";
                     $env_content .= "DB_DATABASE={$db_name}\n";
@@ -98,17 +100,29 @@ if (file_exists(__DIR__ . '/.installed')) {
                 // 4. Testar conexão com banco
                 if (empty($errors)) {
                     try {
-                        $dsn = "pgsql:host={$db_host};port={$db_port};dbname={$db_name}";
+                        // Construir DSN baseado no driver
+                        if ($db_driver === 'mysql') {
+                            $dsn = "mysql:host={$db_host};port={$db_port};dbname={$db_name};charset=utf8mb4";
+                        } else {
+                            $dsn = "pgsql:host={$db_host};port={$db_port};dbname={$db_name}";
+                        }
+                        
                         $pdo = new PDO($dsn, $db_user, $db_pass);
                         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                        $success[] = "✅ Conexão com banco de dados OK";
+                        $success[] = "✅ Conexão com banco de dados OK ({$db_driver})";
                         
                         // Verificar se as tabelas existem
-                        $stmt = $pdo->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'users'");
+                        if ($db_driver === 'mysql') {
+                            $stmt = $pdo->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '{$db_name}' AND table_name = 'users'");
+                        } else {
+                            $stmt = $pdo->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'users'");
+                        }
+                        
                         if ($stmt->fetchColumn() > 0) {
                             $success[] = "✅ Tabelas já existem no banco";
                         } else {
-                            $errors[] = "⚠️ Tabelas não encontradas. Execute as migrations em database/migrations.sql";
+                            $migration_file = ($db_driver === 'mysql') ? 'database/migrations_mysql.sql' : 'database/migrations.sql';
+                            $errors[] = "⚠️ Tabelas não encontradas. Execute as migrations em {$migration_file}";
                         }
                     } catch (PDOException $e) {
                         $errors[] = "Erro ao conectar no banco: " . $e->getMessage();
@@ -184,6 +198,15 @@ if (file_exists(__DIR__ . '/.installed')) {
                 <h3 class="text-lg font-bold text-gray-800">Configurações do Banco de Dados</h3>
                 <p class="text-sm text-gray-600">Obtenha estas informações no cPanel > Databases</p>
                 
+                <div>
+                    <label class="block text-sm font-bold mb-2">Tipo de Banco</label>
+                    <select name="db_driver" id="db_driver" class="w-full border rounded px-3 py-2" onchange="updatePort()">
+                        <option value="mysql" <?= ($_POST['db_driver'] ?? 'mysql') === 'mysql' ? 'selected' : '' ?>>MySQL (Recomendado para Hostinger)</option>
+                        <option value="pgsql" <?= ($_POST['db_driver'] ?? '') === 'pgsql' ? 'selected' : '' ?>>PostgreSQL</option>
+                    </select>
+                    <p class="text-xs text-gray-600 mt-1">MySQL é mais comum na Hostinger</p>
+                </div>
+                
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-bold mb-2">Host</label>
@@ -194,8 +217,8 @@ if (file_exists(__DIR__ . '/.installed')) {
                     
                     <div>
                         <label class="block text-sm font-bold mb-2">Porta</label>
-                        <input type="text" name="db_port" required 
-                               value="<?= $_POST['db_port'] ?? '5432' ?>"
+                        <input type="text" name="db_port" id="db_port" required 
+                               value="<?= $_POST['db_port'] ?? '3306' ?>"
                                class="w-full border rounded px-3 py-2">
                     </div>
                 </div>
@@ -239,6 +262,18 @@ if (file_exists(__DIR__ . '/.installed')) {
             </div>
         </div>
     </div>
+    
+    <script>
+        function updatePort() {
+            const driver = document.getElementById('db_driver').value;
+            const portInput = document.getElementById('db_port');
+            if (driver === 'mysql') {
+                portInput.value = '3306';
+            } else if (driver === 'pgsql') {
+                portInput.value = '5432';
+            }
+        }
+    </script>
 </body>
 </html>
 
