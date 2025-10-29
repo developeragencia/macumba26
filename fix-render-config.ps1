@@ -1,7 +1,7 @@
 # Script PowerShell para corrigir configuração do Render via API
 
-$API_KEY = "rnd_IZEmZlABhzFJKUMPusvBVW0XcepG"
-$SERVICE_ID = "srv-d40lj2jipnbc73ctbtc0"  # Service ID ATUALIZADO
+$API_KEY = "rnd_ttgfIUvmtvPME2Nnsl03jyFEabdb"  # API KEY ATUALIZADA
+$SERVICE_ID = "srv-d40lj2jipnbc73ctbtc0"
 
 Write-Host "Corrigindo configuracao do servico Render..." -ForegroundColor Yellow
 Write-Host "Service ID: $SERVICE_ID" -ForegroundColor Cyan
@@ -36,10 +36,6 @@ try {
     Write-Host ""
 } catch {
     Write-Host "Erro ao atualizar configuracoes: $($_.Exception.Message)" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "A API pode nao ter acesso a este servico." -ForegroundColor Yellow
-    Write-Host "Configure manualmente no Dashboard:" -ForegroundColor Yellow
-    Write-Host "https://dashboard.render.com/web/$SERVICE_ID/settings" -ForegroundColor Cyan
     Write-Host ""
 }
 
@@ -92,10 +88,10 @@ foreach ($env in $envVars) {
 
 Write-Host ""
 if ($errorCount -gt 0) {
-    Write-Host "Algumas variaveis falharam. Configure manualmente:" -ForegroundColor Yellow
+    Write-Host "Algumas variaveis falharam ($errorCount). Configure manualmente:" -ForegroundColor Yellow
     Write-Host "https://dashboard.render.com/web/$SERVICE_ID/env" -ForegroundColor Cyan
 } else {
-    Write-Host "Todas as variaveis configuradas!" -ForegroundColor Green
+    Write-Host "Sucesso! $successCount variaveis configuradas!" -ForegroundColor Green
 }
 
 Write-Host ""
@@ -104,7 +100,5 @@ Write-Host "1. Acesse: https://dashboard.render.com/web/$SERVICE_ID"
 Write-Host "2. Verifique Settings -> Build & Deploy"
 Write-Host "3. Verifique Environment (6 variaveis)"
 Write-Host "4. Clique em Manual Deploy -> Clear build cache & deploy"
-Write-Host "5. Aguarde 5-10 minutos"
-Write-Host "6. Verifique os Logs se der erro"
 Write-Host ""
 Write-Host "Dashboard: https://dashboard.render.com/web/$SERVICE_ID" -ForegroundColor Green
