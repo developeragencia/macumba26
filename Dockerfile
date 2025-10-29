@@ -6,14 +6,14 @@ RUN apk add --no-cache libc6-compat
 # Build Backend
 # ========================================
 FROM base AS backend-deps
-WORKDIR /app/backend
+WORKDIR /app
 COPY backend/package.json backend/package-lock.json ./
 RUN npm ci --legacy-peer-deps
 
 FROM base AS backend-builder
-WORKDIR /app/backend
-COPY --from=backend-deps /app/backend/node_modules ./node_modules
-COPY backend/ .
+WORKDIR /app
+COPY --from=backend-deps /app/node_modules ./node_modules
+COPY backend ./
 RUN npx prisma generate
 RUN npm run build
 
@@ -21,14 +21,14 @@ RUN npm run build
 # Build Frontend  
 # ========================================
 FROM base AS frontend-deps
-WORKDIR /app/frontend
+WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm install --legacy-peer-deps
 
 FROM base AS frontend-builder
-WORKDIR /app/frontend
-COPY --from=frontend-deps /app/frontend/node_modules ./node_modules
-COPY frontend/ .
+WORKDIR /app
+COPY --from=frontend-deps /app/node_modules ./node_modules
+COPY frontend ./
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
