@@ -1,0 +1,75 @@
+{
+  "envVars": [
+    {
+      "key": "NODE_ENV",
+      "value": "production",
+      "description": "Ambiente de execução"
+    },
+    {
+      "key": "PORT",
+      "value": "3000",
+      "description": "Porta do servidor Next.js"
+    },
+    {
+      "key": "NEXT_PUBLIC_API_URL",
+      "value": "https://macumba26-2kl4.onrender.com",
+      "description": "URL da API backend"
+    },
+    {
+      "key": "NEXTAUTH_URL",
+      "value": "https://shopping-macumba-front.onrender.com",
+      "description": "URL do frontend (altere conforme o serviço escolhido)"
+    },
+    {
+      "key": "NEXTAUTH_SECRET",
+      "value": "d8f7a9b2c5e6f1a3d4b7c8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+      "description": "Secret para NextAuth (64 caracteres hexadecimais)"
+    },
+    {
+      "key": "GOOGLE_CLIENT_ID",
+      "value": "",
+      "description": "OPCIONAL: ID do cliente Google OAuth"
+    },
+    {
+      "key": "GOOGLE_CLIENT_SECRET",
+      "value": "",
+      "description": "OPCIONAL: Secret do cliente Google OAuth"
+    },
+    {
+      "key": "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME",
+      "value": "",
+      "description": "OPCIONAL: Nome do cloud no Cloudinary"
+    },
+    {
+      "key": "NEXT_PUBLIC_CLOUDINARY_API_KEY",
+      "value": "",
+      "description": "OPCIONAL: API Key do Cloudinary"
+    }
+  ],
+  "services": {
+    "recomendado": {
+      "id": "srv-d40ocsgdl3ps73d6k5eg",
+      "name": "shopping-macumba-front",
+      "url": "https://shopping-macumba-front.onrender.com",
+      "dashboard": "https://dashboard.render.com/web/srv-d40ocsgdl3ps73d6k5eg"
+    },
+    "alternativa1": {
+      "id": "srv-d40ob16r433s73a45ge0",
+      "name": "macumba26-front",
+      "url": "https://macumba26-front.onrender.com",
+      "dashboard": "https://dashboard.render.com/web/srv-d40ob16r433s73a45ge0"
+    },
+    "alternativa2": {
+      "id": "srv-d40o6bp5pdvs73d9db6g",
+      "name": "macumba26-frontend",
+      "url": "https://macumba26-frontend.onrender.com",
+      "dashboard": "https://dashboard.render.com/web/srv-d40o6bp5pdvs73d9db6g"
+    }
+  },
+  "backend": {
+    "url": "https://macumba26-2kl4.onrender.com",
+    "health_check": "https://macumba26-2kl4.onrender.com/api/health"
+  },
+  "nota": "Como o Render está bloqueando operações via API/MCP devido ao limite de builds, você precisa adicionar estas variáveis MANUALMENTE no painel do Render."
+}
+
