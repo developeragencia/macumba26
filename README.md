@@ -1,475 +1,242 @@
-# 🕯️ Shopping da Macumba
+# 🛍️ Shopping da Macumba
 
-![Shopping da Macumba](https://img.shields.io/badge/Version-1.0.0-gold?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)
+Marketplace e SaaS para produtos religiosos, espirituais e esotéricos, inspirado no Mercado Livre.
 
-> O maior marketplace SaaS de produtos espirituais, místicos e esotéricos do Brasil 🔮
+## 🏗️ Arquitetura
 
-## 📖 Sobre o Projeto
+**Aplicação Integrada:** Frontend Next.js + Backend NestJS rodando em um único serviço.
 
-**Shopping da Macumba** é uma plataforma completa de marketplace + SaaS inspirada no Mercado Livre, dedicada exclusivamente a produtos e serviços espirituais, místicos e esotéricos afro-brasileiros.
+```
+┌─────────────────────────────────────┐
+│   Render Web Service (Port 3000)   │
+├─────────────────────────────────────┤
+│                                     │
+│  ┌──────────────────────────────┐  │
+│  │   NestJS Backend (API)       │  │
+│  │   /api/*                     │  │
+│  └──────────────────────────────┘  │
+│              ↓                      │
+│  ┌──────────────────────────────┐  │
+│  │   Next.js Frontend           │  │
+│  │   /*                         │  │
+│  └──────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
+         ↓
+┌─────────────────────────────────────┐
+│   Neon PostgreSQL Database          │
+└─────────────────────────────────────┘
+```
 
-### ✨ Principais Funcionalidades
-
-#### 🛒 **Área do Cliente**
-- Cadastro e login (email + Google OAuth)
-- Busca avançada com filtros
-- Carrinho de compras
-- Sistema de favoritos/wishlist
-- Avaliações e comentários
-- Histórico de pedidos
-- Chat com vendedores
-- Notificações em tempo real
-- Recomendações personalizadas com IA
-
-#### 🏪 **Área do Vendedor**
-- Dashboard completo com métricas
-- Gestão de produtos (CRUD completo)
-- Controle de estoque
-- Gestão de pedidos
-- Relatórios de vendas
-- Sistema de mensagens
-- Configuração de promoções
-- Sistema de assinatura SaaS (Free, Pro, Premium)
-
-#### 👨‍💼 **Painel Administrativo**
-- Dashboard com estatísticas globais
-- Gestão de usuários
-- Aprovação de vendedores
-- Moderação de produtos
-- Sistema de tickets/suporte
-- Configuração de taxas e comissões
-- Gerenciamento de categorias
-- Logs de atividades
-
-#### 💳 **Sistema de Pagamentos**
-- **PIX** (QR Code)
-- **Mercado Pago**
-- **Stripe** (Cartão de Crédito/Débito)
-- **PayPal**
-- Webhooks para confirmação automática
-
-#### 🎯 **SaaS para Vendedores**
-- **Free**: até 5 produtos
-- **Pro**: até 100 produtos + destaque
-- **Premium**: produtos ilimitados + personalização completa
-
-## 🚀 Tech Stack
-
-### Frontend
-- **Next.js 14** (App Router)
-- **TypeScript**
-- **Tailwind CSS**
-- **Shadcn UI**
-- **Zustand** (State Management)
-- **React Hook Form** + **Zod**
-- **Axios**
-- **Socket.io Client**
+## 🚀 Stack Tecnológica
 
 ### Backend
-- **NestJS**
-- **TypeScript**
-- **PostgreSQL**
-- **Prisma ORM**
-- **JWT Authentication**
-- **Passport.js** (Google OAuth)
-- **Socket.io** (Real-time)
-- **Redis** (Cache & Sessions)
+- **NestJS** - Framework Node.js
+- **Prisma ORM** - Database ORM
+- **PostgreSQL (Neon)** - Database
+- **JWT** - Autenticação
+- **Bcrypt** - Hash de senhas
+- **Cloudinary** - Upload de imagens
+- **Stripe/Mercado Pago/Pix** - Pagamentos
 
-### Payments & Storage
-- **Cloudinary** (Imagens)
-- **Stripe SDK**
-- **Mercado Pago SDK**
-- **PayPal SDK**
-- **Nodemailer** (Emails)
+### Frontend
+- **Next.js 14** - React Framework (App Router)
+- **Tailwind CSS** - Styling
+- **Shadcn UI** - Componentes
+- **NextAuth.js** - Autenticação
+- **Axios** - HTTP Client
 
-### DevOps
-- **Docker** & **Docker Compose**
-- **Vercel** (Frontend)
-- **Railway/Render** (Backend)
-- **GitHub Actions** (CI/CD)
-
-## 📁 Estrutura do Projeto
+## 📦 Estrutura do Projeto
 
 ```
 shopping-da-macumba/
-├── frontend/                 # Next.js 14 App
-│   ├── app/                 # App Router
-│   │   ├── (auth)/         # Auth pages
-│   │   ├── (shop)/         # Shop pages
-│   │   ├── vendedor/       # Vendor dashboard
-│   │   ├── admin/          # Admin dashboard
-│   │   └── api/            # API routes
-│   ├── components/          # React components
-│   │   ├── ui/             # Shadcn UI components
-│   │   ├── layout/         # Layout components
-│   │   ├── home/           # Home page components
-│   │   ├── products/       # Product components
-│   │   └── ...
-│   ├── lib/                 # Utilities & API client
-│   ├── public/              # Static assets
-│   └── styles/              # Global styles
-│
-├── backend/                  # NestJS API
+├── backend/               # Backend NestJS
 │   ├── src/
-│   │   ├── auth/           # Authentication module
-│   │   ├── users/          # Users module
-│   │   ├── vendors/        # Vendors module
-│   │   ├── products/       # Products module
-│   │   ├── categories/     # Categories module
-│   │   ├── orders/         # Orders module
-│   │   ├── cart/           # Shopping cart module
-│   │   ├── payments/       # Payments integration
-│   │   ├── subscriptions/  # SaaS subscriptions
-│   │   ├── messages/       # Chat system
-│   │   ├── notifications/  # Notifications
-│   │   ├── reviews/        # Reviews & ratings
-│   │   ├── wishlist/       # Wishlist
-│   │   ├── blog/           # Blog posts
-│   │   ├── admin/          # Admin operations
-│   │   ├── recommendations/ # AI recommendations
-│   │   ├── cloudinary/     # Image upload
-│   │   ├── email/          # Email service
-│   │   └── prisma/         # Database service
-│   └── prisma/
-│       └── schema.prisma   # Database schema
+│   │   ├── auth/         # Autenticação
+│   │   ├── users/        # Usuários
+│   │   ├── vendors/      # Vendedores
+│   │   ├── products/     # Produtos
+│   │   ├── orders/       # Pedidos
+│   │   ├── payments/     # Pagamentos
+│   │   ├── cloudinary/   # Upload de imagens
+│   │   └── main.ts       # Entry point (serve Next.js)
+│   ├── prisma/
+│   │   └── schema.prisma # Database schema
+│   └── package.json
 │
-├── docker-compose.yml        # Docker orchestration
-├── .env.example             # Environment variables template
-└── README.md                # This file
+├── frontend/              # Frontend Next.js
+│   ├── app/              # App Router
+│   ├── components/       # Componentes React
+│   ├── lib/              # Utilities
+│   └── package.json
+│
+├── Dockerfile             # Build integrado
+└── render.yaml            # Configuração Render
 ```
 
-## 🔧 Instalação e Configuração
+## 🔧 Desenvolvimento Local
 
 ### Pré-requisitos
+- Node.js 18+
+- PostgreSQL (ou usar Neon)
 
-- Node.js 20+
-- PostgreSQL 15+
-- Redis (opcional, para cache)
-- Docker & Docker Compose (opcional)
-
-### 1. Clone o Repositório
-
-```bash
-git clone https://github.com/seu-usuario/shopping-da-macumba.git
-cd shopping-da-macumba
-```
-
-### 2. Configurar Variáveis de Ambiente
-
-Copie o arquivo `.env.example` para `.env` na raiz, backend e frontend:
-
-```bash
-cp .env.example .env
-```
-
-Edite os arquivos `.env` com suas credenciais:
-
-```env
-# Database
-DATABASE_URL="postgresql://shopping_admin:macumba_secure_2024@localhost:5432/shopping_da_macumba"
-
-# JWT
-JWT_SECRET="your-super-secret-jwt-key"
-JWT_EXPIRES_IN="7d"
-
-# NextAuth
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-nextauth-secret"
-
-# Google OAuth
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-
-# Cloudinary
-CLOUDINARY_CLOUD_NAME="your-cloud-name"
-CLOUDINARY_API_KEY="your-api-key"
-CLOUDINARY_API_SECRET="your-api-secret"
-
-# Payments
-MERCADO_PAGO_ACCESS_TOKEN="your-mp-token"
-STRIPE_SECRET_KEY="your-stripe-key"
-PAYPAL_CLIENT_ID="your-paypal-id"
-
-# Email
-SMTP_HOST="smtp.gmail.com"
-SMTP_PORT="587"
-SMTP_USER="your-email@gmail.com"
-SMTP_PASSWORD="your-app-password"
-
-# URLs
-NEXT_PUBLIC_API_URL="http://localhost:3001/api/v1"
-NEXT_PUBLIC_FRONTEND_URL="http://localhost:3000"
-```
-
-### 3. Instalação com Docker (Recomendado)
-
-```bash
-# Iniciar todos os serviços
-docker-compose up -d
-
-# Ver logs
-docker-compose logs -f
-
-# Parar serviços
-docker-compose down
-```
-
-### 4. Instalação Manual
-
-#### Backend
-
+### Backend
 ```bash
 cd backend
 npm install
-
-# Gerar Prisma Client
 npx prisma generate
-
-# Rodar migrations
-npx prisma migrate dev
-
-# Seed database (opcional)
-npm run prisma:seed
-
-# Iniciar servidor
+npx prisma db push
 npm run start:dev
 ```
 
-#### Frontend
-
+### Frontend
 ```bash
 cd frontend
 npm install
-
-# Iniciar em desenvolvimento
 npm run dev
 ```
 
-## 🎨 Design System
+## 🐳 Docker
 
-### Paleta de Cores
-
-```css
-/* Cores Místicas */
---mystical-purple: #4a0e7a;
---mystical-purple-dark: #1a0033;
---mystical-gold: #ffd700;
---mystical-gold-dark: #ff8c00;
---mystical-black: #0a0a0a;
+Build e execução local:
+```bash
+docker build -t shopping-macumba .
+docker run -p 3000:3000 shopping-macumba
 ```
 
-### Tema
+## 🌐 Deploy no Render
 
-O design segue uma estética **mística e espiritual** com:
-- Gradientes roxo e dourado
-- Animações de velas piscando
-- Partículas de estrelas flutuantes
-- Efeito de brilho místico em elementos hover
-- Scrollbar customizada com gradiente dourado
+### Configuração Automática
 
-## 🗄️ Schema do Banco de Dados
+O projeto está configurado com `render.yaml`. Basta conectar o repositório no Render.
 
-### Tabelas Principais
-
-- `users` - Usuários do sistema
-- `vendors` - Vendedores/Lojistas
-- `subscriptions` - Assinaturas SaaS dos vendedores
-- `products` - Produtos à venda
-- `categories` - Categorias de produtos
-- `orders` - Pedidos realizados
-- `order_items` - Itens dos pedidos
-- `cart_items` - Carrinho de compras
-- `wishlist` - Lista de desejos
-- `reviews` - Avaliações de produtos
-- `addresses` - Endereços de entrega
-- `messages` - Sistema de chat
-- `notifications` - Notificações
-- `blog_posts` - Posts do blog
-- `site_settings` - Configurações globais
-
-### Relacionamentos
-
-- Um usuário pode ser um vendedor (1:1)
-- Um vendedor tem uma assinatura (1:1)
-- Produtos pertencem a vendedores e categorias
-- Pedidos contêm múltiplos itens
-- Reviews conectam usuários e produtos
-
-## 🔐 Autenticação
-
-### Fluxo de Login
-
-1. Usuário faz login com email/senha ou Google
-2. Backend valida credenciais
-3. JWT token é gerado e retornado
-4. Frontend armazena token no localStorage
-5. Token é enviado em todas as requisições autenticadas
-
-### Proteção de Rotas
-
-```typescript
-// Backend
-@UseGuards(AuthGuard('jwt'))
-@Controller('protected-route')
-
-// Frontend
-middleware.ts - redirects não autenticados
-```
-
-## 💰 Sistema de Pagamentos
-
-### Fluxo de Checkout
-
-1. **Carrinho** → Usuário adiciona produtos
-2. **Checkout** → Seleciona endereço e método de pagamento
-3. **Pedido** → Sistema cria pedido com status PENDING
-4. **Pagamento** → Redireciona para gateway escolhido
-5. **Webhook** → Gateway confirma pagamento
-6. **Atualização** → Status muda para APPROVED
-7. **Email** → Confirmação enviada ao cliente
-
-### Integração PIX
-
-```typescript
-// Gera QR Code e chave PIX
-const pixData = await paymentsAPI.createPix(orderId, amount);
-// Retorna: { qrCode, pixKey, expiresAt }
-```
-
-## 📦 Deployment
-
-### Frontend (Vercel)
-
-1. Conecte seu repositório GitHub à Vercel
-2. Configure as variáveis de ambiente
-3. Deploy automático a cada push
+### Variáveis de Ambiente
 
 ```bash
-# Build command
-npm run build
-
-# Output directory
-.next
+NODE_ENV=production
+PORT=3000
+DATABASE_URL=postgresql://...  # Neon PostgreSQL
+JWT_SECRET=...                  # Gerado automaticamente
+JWT_EXPIRES_IN=7d
+NEXTAUTH_SECRET=...             # Gerado automaticamente
+NEXTAUTH_URL=https://seu-app.onrender.com
+NEXT_PUBLIC_API_URL=https://seu-app.onrender.com/api
 ```
 
-### Backend (Railway/Render)
+### Health Check
 
-#### Railway
+- Endpoint: `/api/health`
+- Resposta: `{"status":"ok","timestamp":"..."}`
 
+## 📡 API Endpoints
+
+### Autenticação
+- `POST /api/auth/register` - Registro
+- `POST /api/auth/login` - Login
+- `GET /api/auth/me` - Perfil
+
+### Produtos
+- `GET /api/products` - Listar produtos
+- `POST /api/products` - Criar produto
+- `GET /api/products/:id` - Detalhes
+- `PUT /api/products/:id` - Atualizar
+- `DELETE /api/products/:id` - Deletar
+
+### Pedidos
+- `GET /api/orders` - Listar pedidos
+- `POST /api/orders` - Criar pedido
+- `GET /api/orders/:id` - Detalhes
+
+### Pagamentos
+- `POST /api/payments/stripe` - Stripe
+- `POST /api/payments/mercadopago` - Mercado Pago
+- `POST /api/payments/pix` - Pix
+
+## 🎨 Features
+
+### Usuários
+- ✅ Registro e Login
+- ✅ Autenticação JWT
+- ✅ Google OAuth (configurável)
+- ✅ Perfil de usuário
+- ✅ Histórico de pedidos
+
+### Vendedores
+- ✅ Cadastro de vendedor
+- ✅ Dashboard de vendas
+- ✅ Gerenciamento de produtos
+- ✅ Analytics de vendas
+- ✅ Sistema de assinaturas (SaaS)
+
+### Produtos
+- ✅ Catálogo de produtos
+- ✅ Busca e filtros
+- ✅ Categorias
+- ✅ Upload de imagens
+- ✅ Reviews e avaliações
+
+### Pagamentos
+- ✅ Stripe
+- ✅ Mercado Pago
+- ✅ Pix
+- ✅ PayPal (configurável)
+
+### Admin
+- ✅ Dashboard administrativo
+- ✅ Gerenciamento de vendedores
+- ✅ Gerenciamento de produtos
+- ✅ Métricas e analytics
+
+## 🔐 Segurança
+
+- ✅ Senhas com bcrypt
+- ✅ JWT tokens
+- ✅ CORS configurado
+- ✅ Validação de inputs
+- ✅ SQL Injection protection (Prisma)
+- ✅ XSS protection
+- ✅ Rate limiting
+- ✅ Helmet.js
+
+## 📊 Database Schema
+
+Ver `backend/prisma/schema.prisma` para o schema completo.
+
+Principais entidades:
+- `User` - Usuários
+- `Vendor` - Vendedores
+- `Product` - Produtos
+- `Category` - Categorias
+- `Order` - Pedidos
+- `OrderItem` - Itens do pedido
+- `Review` - Avaliações
+- `Subscription` - Assinaturas SaaS
+
+## 🚀 Deploy
+
+### Atualizado
 ```bash
-# Install Railway CLI
-npm i -g @railway/cli
-
-# Login
-railway login
-
-# Deploy
-railway up
+git add .
+git commit -m "Update"
+git push
 ```
 
-#### Render
+O Render fará deploy automaticamente.
 
-1. Conecte seu repositório
-2. Configure como Web Service
-3. Adicione variáveis de ambiente
-4. Configure PostgreSQL Add-on
+### URLs
 
-### Banco de Dados
+- **Backend API:** https://seu-app.onrender.com/api
+- **Frontend:** https://seu-app.onrender.com
+- **Health Check:** https://seu-app.onrender.com/api/health
 
-**Opções:**
-- Railway PostgreSQL
-- Render PostgreSQL
-- Supabase
-- AWS RDS
+## 📝 Licença
 
-## 🧪 Testes
+MIT
 
-```bash
-# Backend
-cd backend
-npm run test
-npm run test:e2e
+## 👥 Suporte
 
-# Frontend
-cd frontend
-npm run test
-```
-
-## 📝 API Documentation
-
-### Base URL
-
-```
-Development: http://localhost:3001/api/v1
-Production: https://api.shopping-da-macumba.com/api/v1
-```
-
-### Principais Endpoints
-
-#### Auth
-- `POST /auth/register` - Registrar usuário
-- `POST /auth/login` - Login
-- `GET /auth/me` - Perfil autenticado
-- `POST /auth/forgot-password` - Recuperar senha
-
-#### Products
-- `GET /products` - Listar produtos (com filtros)
-- `GET /products/:id` - Detalhes do produto
-- `POST /products` - Criar produto (vendedor)
-- `PUT /products/:id` - Atualizar produto
-- `DELETE /products/:id` - Deletar produto
-
-#### Cart
-- `GET /cart` - Ver carrinho
-- `POST /cart` - Adicionar item
-- `PUT /cart/:itemId` - Atualizar quantidade
-- `DELETE /cart/:itemId` - Remover item
-
-#### Orders
-- `POST /orders` - Criar pedido
-- `GET /orders` - Meus pedidos
-- `GET /orders/:id` - Detalhes do pedido
-
-#### Vendors
-- `POST /vendors` - Tornar-se vendedor
-- `GET /vendors/my-store` - Minha loja
-- `GET /vendors/my-store/dashboard` - Dashboard do vendedor
-
-[Ver documentação completa](./docs/API.md)
-
-## 🤝 Contribuindo
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## 👨‍💻 Autor
-
-**Alex Moura**
-
-- GitHub: [@alexmoura](https://github.com/alexmoura)
-- Email: alex@shoppingdamacumba.com
-
-## 🙏 Agradecimentos
-
-- Comunidades espirituais afro-brasileiras
-- Open source community
-- Todos que contribuíram com feedback
+Para suporte, abra uma issue no GitHub.
 
 ---
 
-<div align="center">
-
-**Feito com 🕯️ e 💜 por Alex Moura**
-
-⭐ Se este projeto te ajudou, considere dar uma estrela!
-
-</div>
-
+**Desenvolvido com ❤️ para a comunidade espiritual**
