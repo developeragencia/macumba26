@@ -1,62 +1,40 @@
-# Dockerfile Integrado - Frontend + Backend
-FROM node:18-alpine AS base
-RUN apk add --no-cache libc6-compat
+# Shopping da Macumba - PHP Dockerfile
+FROM php:8.2-apache
 
-# ========================================
-# Build Backend
-# ========================================
-FROM base AS backend-deps
-WORKDIR /app
-COPY backend/package.json backend/package-lock.json ./
-RUN npm ci --legacy-peer-deps
+# Install PHP extensions
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
+    && docker-php-ext-install pdo pdo_pgsql pgsql zip
 
-FROM base AS backend-builder
-WORKDIR /app
-COPY --from=backend-deps /app/node_modules ./node_modules
-COPY backend ./
-RUN npx prisma generate
-RUN npm run build
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
 
-# ========================================
-# Build Frontend  
-# ========================================
-FROM base AS frontend-deps
-WORKDIR /app
-COPY frontend/package.json frontend/package-lock.json ./
-RUN npm install --legacy-peer-deps
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-FROM base AS frontend-builder
-WORKDIR /app
-COPY --from=frontend-deps /app/node_modules ./node_modules
-COPY frontend ./
-ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+# Set working directory
+WORKDIR /var/www/html
 
-# ========================================
-# Production
-# ========================================
-FROM base AS runner
-WORKDIR /app
+# Copy application files
+COPY . .
 
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-RUN addgroup --system --gid 1001 appuser && \
-    adduser --system --uid 1001 appuser
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-# Backend
-COPY --from=backend-builder --chown=appuser:appuser /app/backend/dist ./dist
-COPY --from=backend-builder --chown=appuser:appuser /app/backend/node_modules ./node_modules
-COPY --from=backend-builder --chown=appuser:appuser /app/backend/prisma ./prisma
-COPY --from=backend-builder --chown=appuser:appuser /app/backend/package.json ./
+# Configure Apache DocumentRoot
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# Frontend (dentro de /app/frontend para o NestJS servir)
-COPY --from=frontend-builder --chown=appuser:appuser /app/frontend/.next/standalone ./frontend
-COPY --from=frontend-builder --chown=appuser:appuser /app/frontend/.next/static ./frontend/.next/static
-COPY --from=frontend-builder --chown=appuser:appuser /app/frontend/public ./frontend/public
+# Expose port
+EXPOSE 80
 
-USER appuser
+# Start Apache
+CMD ["apache2-foreground"]
 
-EXPOSE 3000
-
-CMD ["node", "dist/main"]

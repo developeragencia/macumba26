@@ -1,233 +1,181 @@
-# 🛍️ Shopping da Macumba
+# 🕯️ Shopping da Macumba
 
-Marketplace e SaaS para produtos religiosos, espirituais e esotéricos, inspirado no Mercado Livre.
-
-## 🏗️ Arquitetura
-
-**Aplicação Integrada:** Frontend Next.js + Backend NestJS rodando em um único serviço.
-
-```
-┌─────────────────────────────────────┐
-│   Render Web Service (Port 3000)   │
-├─────────────────────────────────────┤
-│                                     │
-│  ┌──────────────────────────────┐  │
-│  │   NestJS Backend (API)       │  │
-│  │   /api/*                     │  │
-│  └──────────────────────────────┘  │
-│              ↓                      │
-│  ┌──────────────────────────────┐  │
-│  │   Next.js Frontend           │  │
-│  │   /*                         │  │
-│  └──────────────────────────────┘  │
-│                                     │
-└─────────────────────────────────────┘
-         ↓
-┌─────────────────────────────────────┐
-│   Neon PostgreSQL Database          │
-└─────────────────────────────────────┘
-```
+Marketplace SaaS para produtos espirituais, religiosos e esotéricos - **100% PHP**
 
 ## 🚀 Stack Tecnológica
 
-### Backend
-- **NestJS** - Framework Node.js
-- **Prisma ORM** - Database ORM
-- **PostgreSQL (Neon)** - Database
-- **JWT** - Autenticação
-- **Bcrypt** - Hash de senhas
-- **Cloudinary** - Upload de imagens
-- **Stripe/Mercado Pago/Pix** - Pagamentos
+- **PHP 8.2** - Backend e Frontend integrados
+- **PostgreSQL** - Database (Neon)
+- **Composer** - Gerenciamento de dependências
+- **Tailwind CSS** - Framework CSS (via CDN)
+- **Apache** - Web server
+- **Docker** - Containerização
 
-### Frontend
-- **Next.js 14** - React Framework (App Router)
-- **Tailwind CSS** - Styling
-- **Shadcn UI** - Componentes
-- **NextAuth.js** - Autenticação
-- **Axios** - HTTP Client
+## 🏗️ Arquitetura
 
-## 📦 Estrutura do Projeto
+Aplicação PHP MVC moderna com:
+- ✅ Roteamento personalizado
+- ✅ Controllers
+- ✅ Models com PDO
+- ✅ Views em PHP puro
+- ✅ Autenticação com Sessions
+- ✅ API REST
+- ✅ Frontend integrado
 
 ```
-shopping-da-macumba/
-├── backend/               # Backend NestJS
-│   ├── src/
-│   │   ├── auth/         # Autenticação
-│   │   ├── users/        # Usuários
-│   │   ├── vendors/      # Vendedores
-│   │   ├── products/     # Produtos
-│   │   ├── orders/       # Pedidos
-│   │   ├── payments/     # Pagamentos
-│   │   ├── cloudinary/   # Upload de imagens
-│   │   └── main.ts       # Entry point (serve Next.js)
-│   ├── prisma/
-│   │   └── schema.prisma # Database schema
-│   └── package.json
-│
-├── frontend/              # Frontend Next.js
-│   ├── app/              # App Router
-│   ├── components/       # Componentes React
-│   ├── lib/              # Utilities
-│   └── package.json
-│
-├── Dockerfile             # Build integrado
-└── render.yaml            # Configuração Render
+shopping-macumba/
+├── public/              # Entry point (index.php)
+├── src/
+│   ├── Core/           # Router, Database
+│   ├── Controllers/    # Todos os controllers
+│   └── Models/         # Models (User, Product)
+├── views/              # Templates PHP
+├── database/           # SQL migrations
+└── Dockerfile          # Deploy
 ```
 
-## 🔧 Desenvolvimento Local
+## 📦 Instalação Local
 
 ### Pré-requisitos
-- Node.js 18+
-- PostgreSQL (ou usar Neon)
+- PHP 8.2+
+- Composer
+- PostgreSQL
 
-### Backend
+### Setup
+
 ```bash
-cd backend
-npm install
-npx prisma generate
-npx prisma db push
-npm run start:dev
+# Clone o repositório
+git clone https://github.com/seu-usuario/macumba26.git
+cd macumba26
+
+# Instalar dependências
+composer install
+
+# Configurar ambiente
+cp .env.example .env
+# Edite .env com suas credenciais
+
+# Criar tabelas no banco
+psql $DATABASE_URL < database/migrations.sql
+
+# Iniciar servidor
+composer start
+# ou
+php -S localhost:3000 -t public
 ```
 
-### Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
+Acesse: **http://localhost:3000**
 
 ## 🐳 Docker
 
-Build e execução local:
 ```bash
+# Build
 docker build -t shopping-macumba .
-docker run -p 3000:3000 shopping-macumba
+
+# Run
+docker run -p 3000:80 -e DATABASE_URL=postgresql://... shopping-macumba
 ```
 
 ## 🌐 Deploy no Render
 
-### Configuração Automática
-
-O projeto está configurado com `render.yaml`. Basta conectar o repositório no Render.
-
 ### Variáveis de Ambiente
 
 ```bash
-NODE_ENV=production
-PORT=3000
-DATABASE_URL=postgresql://...  # Neon PostgreSQL
-JWT_SECRET=...                  # Gerado automaticamente
-JWT_EXPIRES_IN=7d
-NEXTAUTH_SECRET=...             # Gerado automaticamente
-NEXTAUTH_URL=https://seu-app.onrender.com
-NEXT_PUBLIC_API_URL=https://seu-app.onrender.com/api
+DATABASE_URL=postgresql://...
+JWT_SECRET=seu-secret-aqui
 ```
 
-### Health Check
+### Dockerfile Deploy
 
-- Endpoint: `/api/health`
-- Resposta: `{"status":"ok","timestamp":"..."}`
+O Render detecta automaticamente o Dockerfile e faz o deploy.
 
 ## 📡 API Endpoints
 
-### Autenticação
-- `POST /api/auth/register` - Registro
+### Auth
+- `POST /api/auth/register` - Cadastro
 - `POST /api/auth/login` - Login
 - `GET /api/auth/me` - Perfil
+- `POST /api/auth/logout` - Logout
 
-### Produtos
-- `GET /api/products` - Listar produtos
-- `POST /api/products` - Criar produto
-- `GET /api/products/:id` - Detalhes
-- `PUT /api/products/:id` - Atualizar
-- `DELETE /api/products/:id` - Deletar
+### Products
+- `GET /api/products` - Listar todos
+- `GET /api/products/{id}` - Ver detalhes
+- `POST /api/products` - Criar (auth)
+- `PUT /api/products/{id}` - Atualizar (auth)
+- `DELETE /api/products/{id}` - Deletar (auth)
 
-### Pedidos
-- `GET /api/orders` - Listar pedidos
-- `POST /api/orders` - Criar pedido
-- `GET /api/orders/:id` - Detalhes
+### Orders
+- `GET /api/orders` - Meus pedidos (auth)
+- `POST /api/orders` - Criar pedido (auth)
+- `GET /api/orders/{id}` - Ver pedido (auth)
 
-### Pagamentos
-- `POST /api/payments/stripe` - Stripe
-- `POST /api/payments/mercadopago` - Mercado Pago
-- `POST /api/payments/pix` - Pix
+### Payments
+- `POST /api/payments/stripe` - Pagamento Stripe
+- `POST /api/payments/pix` - Pagamento PIX
 
-## 🎨 Features
+### Health
+- `GET /api/health` - Status da API
 
-### Usuários
-- ✅ Registro e Login
-- ✅ Autenticação JWT
-- ✅ Google OAuth (configurável)
-- ✅ Perfil de usuário
-- ✅ Histórico de pedidos
+## 🎨 Frontend (Páginas Web)
 
-### Vendedores
-- ✅ Cadastro de vendedor
-- ✅ Dashboard de vendas
-- ✅ Gerenciamento de produtos
-- ✅ Analytics de vendas
-- ✅ Sistema de assinaturas (SaaS)
+- `/` - Home
+- `/login` - Login
+- `/register` - Cadastro
+- `/produtos` - Lista de produtos
+- `/produto/{id}` - Detalhes do produto
+- `/carrinho` - Carrinho
+- `/checkout` - Finalizar compra
+- `/dashboard` - Dashboard do usuário
+- `/vendedor/dashboard` - Dashboard do vendedor
 
-### Produtos
-- ✅ Catálogo de produtos
-- ✅ Busca e filtros
-- ✅ Categorias
-- ✅ Upload de imagens
-- ✅ Reviews e avaliações
+## 💾 Database Schema
 
-### Pagamentos
-- ✅ Stripe
-- ✅ Mercado Pago
-- ✅ Pix
-- ✅ PayPal (configurável)
+Ver `database/migrations.sql` para o schema completo.
 
-### Admin
-- ✅ Dashboard administrativo
-- ✅ Gerenciamento de vendedores
-- ✅ Gerenciamento de produtos
-- ✅ Métricas e analytics
+Tabelas principais:
+- `users` - Usuários
+- `vendors` - Vendedores
+- `products` - Produtos
+- `categories` - Categorias
+- `orders` - Pedidos
+- `order_items` - Itens do pedido
+- `reviews` - Avaliações
 
 ## 🔐 Segurança
 
-- ✅ Senhas com bcrypt
-- ✅ JWT tokens
-- ✅ CORS configurado
-- ✅ Validação de inputs
-- ✅ SQL Injection protection (Prisma)
-- ✅ XSS protection
-- ✅ Rate limiting
-- ✅ Helmet.js
+- ✅ Senhas com `password_hash()`
+- ✅ Prepared statements (PDO)
+- ✅ Session-based auth
+- ✅ SQL Injection protection
+- ✅ XSS protection com `htmlspecialchars()`
 
-## 📊 Database Schema
+## 🎯 Features
 
-Ver `backend/prisma/schema.prisma` para o schema completo.
+### Implementado
+- ✅ Autenticação completa
+- ✅ Cadastro e login
+- ✅ API REST funcional
+- ✅ CRUD de produtos
+- ✅ Frontend responsivo
+- ✅ Dashboard de usuário
+- ✅ Dashboard de vendedor
 
-Principais entidades:
-- `User` - Usuários
-- `Vendor` - Vendedores
-- `Product` - Produtos
-- `Category` - Categorias
-- `Order` - Pedidos
-- `OrderItem` - Itens do pedido
-- `Review` - Avaliações
-- `Subscription` - Assinaturas SaaS
+### Em Desenvolvimento
+- 🔄 Sistema de carrinho
+- 🔄 Checkout e pagamentos
+- 🔄 Upload de imagens
+- 🔄 Sistema de avaliações
+- 🔄 Busca de produtos
 
 ## 🚀 Deploy
 
-### Atualizado
 ```bash
 git add .
-git commit -m "Update"
+git commit -m "Deploy"
 git push
 ```
 
-O Render fará deploy automaticamente.
-
-### URLs
-
-- **Backend API:** https://seu-app.onrender.com/api
-- **Frontend:** https://seu-app.onrender.com
-- **Health Check:** https://seu-app.onrender.com/api/health
+O Render fará deploy automaticamente!
 
 ## 📝 Licença
 
@@ -239,4 +187,5 @@ Para suporte, abra uma issue no GitHub.
 
 ---
 
-**Desenvolvido com ❤️ para a comunidade espiritual**
+**Desenvolvido com ❤️ em PHP puro - Shopping da Macumba**
+
