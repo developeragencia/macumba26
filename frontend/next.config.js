@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone', // Para Docker e Render
   images: {
     domains: ['res.cloudinary.com', 'lh3.googleusercontent.com'],
     remotePatterns: [
