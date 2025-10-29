@@ -4,7 +4,6 @@
   "description": "Backend API for Shopping da Macumba",
   "main": "dist/main.js",
   "scripts": {
-    "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
