@@ -1,48 +1,27 @@
 services:
-  # Backend NestJS API
+  # Aplicação Integrada: Backend NestJS + Frontend Next.js
   - type: web
-    name: shopping-macumba-backend
+    name: shopping-macumba
     runtime: node
-    region: ohio
+    region: oregon
     plan: starter
-    rootDir: backend
     buildCommand: npm ci --legacy-peer-deps && npx prisma generate && npm run build
     startCommand: npm run start:prod
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 10000
+        value: 3000
       - key: DATABASE_URL
         sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
         value: 7d
-      - key: FRONTEND_URL
-        value: https://shopping-macumba-frontend.onrender.com
-    healthCheckPath: /api/health
-    
-  # Frontend Next.js
-  - type: web
-    name: shopping-macumba-frontend
-    runtime: node
-    region: ohio
-    plan: starter
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    startCommand: npm start
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 3000
-      - key: NEXT_PUBLIC_API_URL
-        value: https://macumba26.onrender.com
-      - key: NEXTAUTH_URL
-        value: https://shopping-macumba-frontend.onrender.com
       - key: NEXTAUTH_SECRET
         generateValue: true
-
-# Database: Usando Neon PostgreSQL (já configurado)
-# Não precisa criar database no Render, use a DATABASE_URL manualmente
+      - key: NEXTAUTH_URL
+        value: https://shopping-macumba.onrender.com
+      - key: NEXT_PUBLIC_API_URL
+        value: https://shopping-macumba.onrender.com/api
+    healthCheckPath: /api/health
