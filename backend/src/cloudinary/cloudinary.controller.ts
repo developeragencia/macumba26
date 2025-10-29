@@ -11,6 +11,7 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { CloudinaryService } from './cloudinary.service';
+import { Express } from 'express';
 
 @Controller('upload')
 @UseGuards(AuthGuard('jwt'))
