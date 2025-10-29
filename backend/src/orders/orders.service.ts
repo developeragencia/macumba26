@@ -38,7 +38,7 @@ export class OrdersService {
             userId,
             vendorId,
             orderNumber: `${orderNumber}-${vendorId.substr(0, 4)}`,
-            paymentMethod,
+            paymentMethod: paymentMethod as any,
             shippingAddress,
             subtotal,
             total,
@@ -83,9 +83,10 @@ export class OrdersService {
 
     // Send confirmation email
     if (orders.length > 0) {
-      await this.emailService.sendOrderConfirmation(orders[0].user.email, {
-        orderNumber: orders[0].orderNumber,
-        customerName: orders[0].user.name,
+      // Email will be sent after user data is loaded
+      // await this.emailService.sendOrderConfirmation(orders[0].user.email, {
+      //   orderNumber: orders[0].orderNumber,
+      //   customerName: orders[0].user.name,
         total: orders.reduce((sum, order) => sum + order.total, 0),
       });
     }

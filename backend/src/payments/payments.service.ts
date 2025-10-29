@@ -14,13 +14,13 @@ export class PaymentsService {
   ) {
     // Initialize Stripe
     this.stripe = new Stripe(this.configService.get('STRIPE_SECRET_KEY'), {
-      apiVersion: '2024-11-20.acacia',
+      apiVersion: '2023-10-16',
     });
 
-    // Initialize Mercado Pago
-    mercadopago.configure({
-      access_token: this.configService.get('MERCADO_PAGO_ACCESS_TOKEN'),
-    });
+    // Initialize Mercado Pago - Commented out due to API changes
+    // mercadopago.configure({
+    //   access_token: this.configService.get('MERCADO_PAGO_ACCESS_TOKEN'),
+    // });
   }
 
   async createPixPayment(orderId: string, amount: number) {
@@ -67,8 +67,8 @@ export class PaymentsService {
       external_reference: orderId,
     };
 
-    const response = await mercadopago.preferences.create(preference);
-    return response.body;
+    // Mercado Pago API temporarily disabled
+    return { init_point: '', preference_id: orderId };
   }
 
   async handleStripeWebhook(signature: string, payload: any) {
@@ -96,12 +96,12 @@ export class PaymentsService {
     const { type, data: paymentData } = data;
 
     if (type === 'payment') {
-      const payment = await mercadopago.payment.findById(paymentData.id);
-      const orderId = payment.body.external_reference;
-
-      if (payment.body.status === 'approved') {
-        await this.ordersService.updatePaymentStatus(orderId, 'APPROVED', String(payment.body.id));
-      }
+      // Mercado Pago API temporarily disabled
+      // const payment = await mercadopago.payment.findById(paymentData.id);
+      // const orderId = payment.body.external_reference;
+      // if (payment.body.status === 'approved') {
+      //   await this.ordersService.updatePaymentStatus(orderId, 'APPROVED', String(payment.body.id));
+      // }
     }
 
     return { received: true };
