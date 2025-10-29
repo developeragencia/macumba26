@@ -1,27 +1,46 @@
+# Build stage
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
 
-RUN npm ci
+# Install dependencies
+RUN npm ci --only=production && \
+    npm cache clean --force
 
+# Generate Prisma Client
+RUN npx prisma generate
+
+# Copy source code
 COPY . .
 
-RUN npm run prisma:generate
+# Build application
 RUN npm run build
 
+# Production stage
 FROM node:20-alpine
 
 WORKDIR /app
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
+# Copy package files
+COPY package*.json ./
+
+# Install production dependencies only
+RUN npm ci --only=production && \
+    npm cache clean --force
+
+# Copy Prisma schema and generate client
+COPY prisma ./prisma/
+RUN npx prisma generate
+
+# Copy built application from builder
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/prisma ./prisma
 
-EXPOSE 3001
+# Expose port
+EXPOSE 10000
 
-CMD ["npm", "run", "start:prod"]
-
+# Start application
+CMD ["node", "dist/main"]
