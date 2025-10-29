@@ -31,7 +31,12 @@ class Database
                 if ($driver === 'mysql') {
                     $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
                 } else {
-                    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+                    // PostgreSQL: só adicionar porta se for numérica
+                    if (is_numeric($port) && $port > 0) {
+                        $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+                    } else {
+                        $dsn = "pgsql:host=$host;dbname=$dbname";
+                    }
                 }
                 
                 self::$connection = new PDO($dsn, $user, $password, [
