@@ -1,26 +1,13 @@
-# Shopping da Macumba - Public Directory
-# Rewrite rules for clean URLs
+# Public directory - Permite acesso direto aos arquivos
+# Este .htaccess é para quando o public/ é o document root
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /public/
     
-    # Allow static files (CSS, JS, Images)
+    # Permitir arquivos estáticos
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     
-    # Route everything to index.php
-    RewriteRule ^(.*)$ index.php/$1 [L,QSA]
-</IfModule>
-
-# Security
-<FilesMatch "\.(env|sql|log)$">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
-
-# PHP Settings
-<IfModule mod_php7.c>
-    php_flag display_errors Off
-    php_flag display_startup_errors Off
+    # Redirecionar para index.php
+    RewriteRule ^(.*)$ index.php [L,QSA]
 </IfModule>
