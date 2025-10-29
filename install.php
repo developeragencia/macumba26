@@ -38,13 +38,28 @@ if (file_exists(__DIR__ . '/.installed')) {
                 }
                 
                 // 2. Verificar extensões necessárias
-                $required_extensions = ['pdo', 'pdo_pgsql', 'json', 'mbstring'];
+                $required_extensions = ['pdo', 'json', 'mbstring'];
+                $optional_extensions = ['pdo_pgsql', 'pdo_mysql'];
+                
                 foreach ($required_extensions as $ext) {
                     if (!extension_loaded($ext)) {
                         $errors[] = "Extensão PHP necessária não encontrada: {$ext}";
                     } else {
                         $success[] = "✅ Extensão {$ext} OK";
                     }
+                }
+                
+                // Verificar se tem pelo menos um driver de banco
+                $has_db_driver = false;
+                foreach ($optional_extensions as $ext) {
+                    if (extension_loaded($ext)) {
+                        $success[] = "✅ Extensão {$ext} OK";
+                        $has_db_driver = true;
+                    }
+                }
+                
+                if (!$has_db_driver) {
+                    $errors[] = "Nenhum driver de banco encontrado. Ative pdo_pgsql ou pdo_mysql no cPanel > Select PHP Version";
                 }
                 
                 // 3. Criar arquivo .env
@@ -101,13 +116,24 @@ if (file_exists(__DIR__ . '/.installed')) {
                 }
                 
                 // 5. Verificar permissões de pastas
-                $writable_dirs = ['.', 'vendor'];
+                $writable_dirs = ['.'];
                 foreach ($writable_dirs as $dir) {
                     if (is_writable($dir)) {
                         $success[] = "✅ Pasta {$dir}/ com permissões OK";
                     } else {
-                        $errors[] = "Pasta {$dir}/ não tem permissão de escrita";
+                        $errors[] = "Pasta {$dir}/ não tem permissão de escrita. Execute: chmod 755 {$dir}";
                     }
+                }
+                
+                // Verificar vendor (aviso, não erro)
+                if (file_exists('vendor')) {
+                    if (is_writable('vendor')) {
+                        $success[] = "✅ Pasta vendor/ com permissões OK";
+                    } else {
+                        $success[] = "⚠️ Pasta vendor/ sem permissão de escrita (pode ignorar se já tem dependências)";
+                    }
+                } else {
+                    $success[] = "⚠️ Pasta vendor/ não existe (execute: composer install)";
                 }
                 
                 // 6. Marcar como instalado se tudo OK

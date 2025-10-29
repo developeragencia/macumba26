@@ -13,27 +13,36 @@ class Database
     {
         if (self::$connection === null) {
             try {
-                $dsn = $_ENV['DATABASE_URL'] ?? 'postgresql://localhost/shopping_macumba';
+                // Tentar obter configuração de variáveis de ambiente
+                $host = $_ENV['DB_HOST'] ?? 'localhost';
+                $port = $_ENV['DB_PORT'] ?? '3306';
+                $dbname = $_ENV['DB_DATABASE'] ?? $_ENV['DB_NAME'] ?? 'shopping_macumba';
+                $user = $_ENV['DB_USERNAME'] ?? $_ENV['DB_USER'] ?? 'root';
+                $password = $_ENV['DB_PASSWORD'] ?? $_ENV['DB_PASS'] ?? '';
+                $driver = $_ENV['DB_DRIVER'] ?? 'mysql'; // 'mysql' ou 'pgsql'
                 
-                // Parse PostgreSQL connection string
-                if (strpos($dsn, 'postgresql://') === 0) {
-                    $parts = parse_url($dsn);
-                    $host = $parts['host'];
-                    $port = $parts['port'] ?? 5432;
-                    $dbname = ltrim($parts['path'], '/');
-                    $user = $parts['user'];
-                    $password = $parts['pass'];
-                    
-                    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
-                    
-                    self::$connection = new PDO($dsn, $user, $password, [
-                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                        PDO::ATTR_EMULATE_PREPARES => false,
-                    ]);
+                // Detectar driver automaticamente baseado nas extensões disponíveis
+                if ($driver === 'pgsql' && !extension_loaded('pdo_pgsql')) {
+                    $driver = 'mysql';
+                    $port = '3306'; // Porta padrão MySQL
                 }
+                
+                // Construir DSN baseado no driver
+                if ($driver === 'mysql') {
+                    $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
+                } else {
+                    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+                }
+                
+                self::$connection = new PDO($dsn, $user, $password, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                ]);
+                
             } catch (PDOException $e) {
-                die("Database connection failed: " . $e->getMessage());
+                error_log("Database connection failed: " . $e->getMessage());
+                die("Erro de conexão com banco de dados. Verifique as credenciais no arquivo .env");
             }
         }
     }
@@ -64,4 +73,3 @@ class Database
         return self::getConnection()->lastInsertId();
     }
 }
-
